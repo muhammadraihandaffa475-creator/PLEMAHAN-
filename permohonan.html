@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permohonan Layanan - One Gate Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Library jsPDF untuk Export PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <!-- Library Chart.js untuk Grafik -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="poster">
+    <div class="top-wrap" style="grid-template-columns: 250px 1fr; align-items: flex-start;">
+        <div class="left-brand" style="min-height: 0;">
+            <div class="logo-row">
+                <img src="https://pbs.twimg.com/profile_images/1574979399744512003/NeQOapZP_400x400.jpg" alt="Logo Kabupaten Kediri" class="logo-img">
+                <div class="brand-stack">
+                    <div class="brand-text">
+                        <div class="small">PEMKAB KEDIRI</div>
+                        <div class="big">KECAMATAN</div>
+                        <div class="sub">PLEMAHAN</div>
+                    </div>
+                </div>
+            </div>
+            <div class="small-logos-group">
+                <img src="https://static.vecteezy.com/system/resources/previews/028/535/743/non_2x/logo-slogan-kediri-berbudaya-free-vector.jpg" alt="Logo Berbudaya" class="logo-img-small">
+                <img src="https://www.shutterstock.com/image-vector/vector-logo-mas-bup-kediri-260nw-2300303319.jpg" alt="Logo Mas Bup" class="logo-img-small">
+                <img src="https://bpmsph.ditjenpkh.pertanian.go.id/storage/master/img/thumb/BdpGfOw1nsaplseK20250925083312.png" alt="Logo Tambahan" class="logo-img-small">
+            </div>
+            <div class="left-shape" style="position: relative; top: 0; width: 100%; height: auto; border-radius: 24px; min-height: 300px;">
+                <div class="quote-box">
+                    <div>
+                        <div class="quote">“</div>
+                        <h3>FORMULIR & DASHBOARD LAYANAN</h3>
+                    </div>
+                </div>
+            </div>
+             <div class="vertical-slider-container" style="margin-top: 20px;" data-page="permohonan">
+                <div class="vertical-slider-viewport">
+                    <div class="vertical-slider-track">
+                        <a href="index.html" class="tab" style="width: 100%; border-radius: 12px;">
+                            <span>Kembali ke Beranda</span>
+                        </a>
+                        <a href="layanan.html" class="tab" style="width: 100%; border-radius: 12px;">
+                            <span>Lihat Daftar Layanan</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="vertical-slider-nav">
+                    <button class="v-slide-btn v-slide-up" aria-label="Geser ke atas">▲</button>
+                    <button class="v-slide-btn v-slide-down" aria-label="Geser ke bawah">▼</button>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div id="form-container">
+                <!-- Tabs Navigation -->
+                <div class="form-tabs flex mb-8 border-b border-gray-200">
+                    <button type="button" id="tab-input" class="active">
+                        1. Isi Data
+                    </button>
+                    <button type="button" id="tab-review" class="relative">
+                        2. Review & Kirim
+                        <span id="badge-count" class="absolute top-3 right-4 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </button>
+                </div>
+
+                <form id="serviceForm" class="overflow-hidden transition-[height] duration-500 ease-in-out">
+                    <div id="form-slider" class="flex transition-transform duration-500 ease-in-out items-stretch">
+                    <!-- BAGIAN 1: INPUT DATA -->
+                    <div id="input-section" class="w-full flex-shrink-0 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Pelayanan</label>
+                            <select id="input-layanan" class="form-input">
+                                <option>SAHAJA LEKAT</option>
+                                <option>Penerbitan Surat Dispensasi Nikah</option>
+                                <option>Verifikasi Surat Pengantar Pembuatan Surat Keterangan Catatan Kepolisian</option>
+                                <option>Verifikasi Surat Keterangan Tidak Mampu</option>
+                                <option>Verifikasi Surat Rekomendasi Ijin Kegiatan/Keramaian</option>
+                                <option>Verifikasi Surat Pernyataan Ahli Waris</option>
+                                <option>Verifikasi Surat Keterangan Usaha</option>
+                                <option>Permohonan Legalisasi Dokumen</option>
+                                <option>Verifikasi atau Pengesahan Dokumen Lainnya</option>
+                                <option>Pelayanan Konsultasi</option>
+                                <option>Penerbitan Rekomendasi Pencairan Dana APBDes</option>
+                                <option>Penerbitan Rekomendasi Rotasi/Pemberhentian/Pengisian/Pelantikan Perangkat Desa</option>
+                                <option>Penerbitan Akta Jual Beli (AJB)/Akta Hibah (AH)/Akta Pembagian Hak Bersama (APHB) oleh Pejabat Pembuat Akta Tanah Sementara (PPATS)</option>
+                                <option>Pendampingan Pembentukan Produk Hukum Desa</option>
+                                <option>Layanan Pengaduan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label>
+                            <input type="text" id="input-nama" required class="form-input" placeholder="Nama Sesuai KTP">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Permohonan</label>
+                            <input type="date" id="input-tanggal" required class="form-input">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Desa</label>
+                            <input type="text" id="input-desa" required class="form-input" placeholder="Nama Desa Domisili">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Umur</label>
+                            <input type="number" id="input-umur" required class="form-input" placeholder="Contoh: 25">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Jenis Kelamin</label>
+                            <select id="input-jk" class="form-input">
+                                <option>Laki-laki</option>
+                                <option>Perempuan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">No Telepon (WhatsApp)</label>
+                            <input type="tel" id="input-telepon" required class="form-input" placeholder="08xxxxxxxxxx">
+                        </div>
+                    </div>
+
+                        <button type="button" id="btn-tambah-data" class="btn-primary">
+                            + Tambahkan ke Tabel Antrian
+                        </button>
+                    </div>
+
+                    <!-- BAGIAN 2: REVIEW DATA (REAL TIME) -->
+                    <div id="review-section" class="w-full flex-shrink-0 space-y-6">
+                        <div id="preview-container">
+                            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                                    <span class="bg-blue-100 text-blue-700 p-1.5 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg></span>
+                                    Daftar Antrian
+                                </h3>
+                                <div class="flex gap-3">
+                                    <!-- GANTI HREF DI BAWAH INI DENGAN LINK GOOGLE SPREADSHEET ANDA -->
+                                    <a id="btn-open-spreadsheet" href="https://docs.google.com/spreadsheets/d/1UwZLRj3mJNGR9d0fBFopiJ0VgSbmb8b1ivTUqzQZq4A/edit?hl=id&gid=0#gid=0" target="_blank" class="inline-flex items-center px-3 py-2 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg text-sm font-medium transition-colors border border-green-200 shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                        Buka Spreadsheet
+                                    </a>
+                                    <div class="relative inline-block text-left">
+                                        <div>
+                                            <button type="button" id="btn-export-dropdown" class="inline-flex items-center justify-center w-full rounded-lg border border-gray-300 shadow-sm px-3 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                Export PDF
+                                                <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                            </button>
+                                        </div>
+                                        <div id="export-menu" class="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-20 max-h-60 overflow-y-auto" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                                            <div class="py-1" role="none" id="export-options-container">
+                                                <!-- Opsi export akan ditambahkan oleh JavaScript -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="btn-reset-tabel" class="inline-flex items-center px-3 py-2 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg text-sm font-medium transition-colors border border-red-200 shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto max-h-[500px] overflow-y-auto relative bg-white shadow-lg rounded-xl border border-gray-200 ring-1 ring-black ring-opacity-5">
+                                <table class="min-w-full divide-y divide-gray-100 data-table">
+                                    <thead id="preview-table-head" class="bg-gray-50 sticky top-0 z-10 shadow-sm"></thead>
+                                    <tbody id="preview-table-body" class="divide-y divide-gray-100 bg-white"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button type="button" id="btn-tambah-lagi" class="w-1/2 bg-gray-100 text-gray-700 font-bold py-4 rounded-xl shadow hover:bg-gray-200 transition duration-300">
+                                + Tambah Data Lain
+                            </button>
+                            <button type="button" id="btn-kirim" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-700 hover:shadow-xl transition duration-300 transform hover:-translate-y-0.5 flex justify-center items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-8.683-2.031-9.667-.272-.099-.47-.149-.669-.149-.198 0-.42.001-.643.001-.223 0-.586.085-.892.41-.307.325-1.178 1.151-1.178 2.807 0 1.656 1.203 3.256 1.371 3.481.168.225 2.368 3.616 5.737 5.07 2.399 1.035 2.887.829 3.407.779.52-.05 1.758-.718 2.006-1.411.248-.693.248-1.288.173-1.412z"/></svg>
+                                Kirim Permohonan via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+
+                    </div>
+                </form> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="#" id="back-to-top" class="back-to-top" title="Kembali ke atas">↑</a>
+
+    <script src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // --- KONFIGURASI FIREBASE ---
+        // Ganti konfigurasi di bawah ini dengan milik Anda dari Firebase Console
+        const firebaseConfig = {
+            apiKey: "API_KEY_FIREBASE_ANDA",
+            authDomain: "PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://PROJECT_ID-default-rtdb.firebaseio.com", // WAJIB SESUAI PROJECT ANDA
+            projectId: "PROJECT_ID",
+            storageBucket: "PROJECT_ID.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- KONFIGURASI JSONBIN.IO ---
+            const API_KEY = '$2a$10$h08CHo/2k.EXdddjlF1Jj.wgLWCrn5ygHtQqUzOj7fZxG5RFYTYl6';
+            const BIN_ID = '69d70e6e36566621a892442d';
+            const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+            // GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE SCRIPT ANDA
+            const GOOGLE_SCRIPT_URL = ''; // <--- PASTE URL SCRIPT (https://script.google.com/...) DI SINI
+
+            const serviceForm = document.getElementById('serviceForm');
+            const btnTambahData = document.getElementById('btn-tambah-data');
+            const btnTambahLagi = document.getElementById('btn-tambah-lagi');
+            const btnKirim = document.getElementById('btn-kirim');
+            const btnResetTabel = document.getElementById('btn-reset-tabel');
+            const btnExportDropdown = document.getElementById('btn-export-dropdown');
+            const exportMenu = document.getElementById('export-menu');
+            const exportOptionsContainer = document.getElementById('export-options-container');
+            const inputSection = document.getElementById('input-section');
+            const reviewSection = document.getElementById('review-section');
+            const formSlider = document.getElementById('form-slider');
+            const tabInput = document.getElementById('tab-input');
+            const tabReview = document.getElementById('tab-review');
+            const badgeCount = document.getElementById('badge-count');
+            const tableHead = document.getElementById('preview-table-head');
+            const tableBody = document.getElementById('preview-table-body');
+            const inputLayanan = document.getElementById('input-layanan');
+
+            // --- LOGIKA AUTO-SELECT LAYANAN DARI URL ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const layananParam = urlParams.get('layanan');
+
+            if (layananParam) {
+                const inputLayanan = document.getElementById('input-layanan');
+                if (inputLayanan) {
+                    for (let i = 0; i < inputLayanan.options.length; i++) {
+                        if (inputLayanan.options[i].value === layananParam || inputLayanan.options[i].text === layananParam) {
+                            inputLayanan.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            let currentTab = 'input';
+            let serviceChartInstance = null;
+            let editingRow = null; // Menyimpan baris yang sedang diedit
+
+            function updateFormHeight() {
+                const activeSection = document.querySelector(`#${currentTab}-section`);
+                // Sedikit delay untuk memastikan render layout selesai
+                setTimeout(() => {
+                    serviceForm.style.height = activeSection.offsetHeight + 'px';
+                }, 50);
+            }
+
+            // Fungsi Ganti Tab
+            function switchTab(tab) {
+                currentTab = tab;
+                if (tab === 'input') {
+                    formSlider.style.transform = 'translateX(0%)';
+                    tabInput.classList.add('active');
+                    tabReview.classList.remove('active');
+                } else if (tab === 'review') {
+                    formSlider.style.transform = 'translateX(-100%)';
+                    tabInput.classList.remove('active');
+                    tabReview.classList.add('active');
+                }
+                updateFormHeight();
+            }
+
+            tabInput.addEventListener('click', () => switchTab('input'));
+            tabReview.addEventListener('click', () => switchTab('review'));
+            if (btnTambahLagi) btnTambahLagi.addEventListener('click', () => {
+                editingRow = null; // Reset state edit
+                btnTambahData.innerHTML = '+ Tambahkan ke Tabel Antrian';
+                document.getElementById('input-nama').value = '';
+                document.getElementById('input-tanggal').value = '';
+                document.getElementById('input-desa').value = '';
+                document.getElementById('input-umur').value = '';
+                document.getElementById('input-telepon').value = '';
+                document.getElementById('input-layanan').selectedIndex = 0;
+                document.getElementById('input-jk').selectedIndex = 0;
+                switchTab('input');
+            });
+            
+            // Set tinggi awal & event listener resize
+            updateFormHeight();
+            window.addEventListener('resize', updateFormHeight);
+
+            function updateBadge() {
+                const count = tableBody.querySelectorAll('tr.data-row').length;
+                if (count > 0) {
+                    badgeCount.textContent = count;
+                    badgeCount.classList.remove('hidden');
+                } else {
+                    badgeCount.classList.add('hidden');
+                }
+            }
+
+            // --- FUNGSI PENYIMPANAN DATA (LOCAL STORAGE) ---
+            function saveDataToLocal() {
+                const rows = [];
+                document.querySelectorAll('#preview-table-body tr.data-row').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    // Ambil data dari kolom (index 1 s/d 7)
+                    rows.push({
+                        layanan: cells[1].innerText,
+                        nama: cells[2].innerText,
+                        tanggal: cells[3].innerText,
+                        desa: cells[4].innerText,
+                        umur: cells[5].innerText,
+                        jk: cells[6].innerText,
+                        telepon: cells[7].innerText
+                    });
+                });
+                localStorage.setItem('antrian_layanan', JSON.stringify(rows));
+            }
+            
+            // --- FUNGSI CLOUD (JSONBIN.IO) ---
+            async function saveDataToCloud() {
+                const rows = [];
+                document.querySelectorAll('#preview-table-body tr.data-row').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    // Ambil data dari kolom (index 1 s/d 7)
+                    rows.push({
+                        layanan: cells[1].innerText,
+                        nama: cells[2].innerText,
+                        tanggal: cells[3].innerText,
+                        desa: cells[4].innerText,
+                        umur: cells[5].innerText,
+                        jk: cells[6].innerText,
+                        telepon: cells[7].innerText
+                    });
+                });
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': API_KEY,
+                            'X-Bin-Versioning': 'false'
+                        },
+                        body: JSON.stringify(rows)
+                    });
+                    
+                    if (response.ok) {
+                        console.log("Data berhasil disimpan ke JSONBin");
+                    } else {
+                        console.error("Gagal simpan ke JSONBin. Cek API Key Anda. Status:", response.status);
+                    }
+
+                    // Hanya jalankan Firebase jika kodenya sudah diisi yang asli (bukan dummy)
+                    if (firebaseConfig.apiKey !== "API_KEY_FIREBASE_ANDA") {
+                        await set(ref(db, 'antrian_layanan'), rows);
+                        console.log("Data berhasil disimpan ke Firebase");
+                    }
+                } catch (error) {
+                    console.error("Gagal menyimpan data ke Cloud:", error);
+                }
+            }
+
+            // --- FUNGSI KIRIM KE GOOGLE SHEETS ---
+            function submitToGoogleSheets(data) {
+                if (!GOOGLE_SCRIPT_URL) {
+                    console.warn("URL Google Script belum diisi. Data ditambahkan secara lokal namun belum dikirim ke Google Sheets.");
+                    return;
+                }
+                if (GOOGLE_SCRIPT_URL.includes("docs.google.com/spreadsheets")) {
+                    alert("SALAH URL: Anda memasukkan Link Spreadsheet. Yang dibutuhkan adalah Link Web App (berawalan https://script.google.com/...). Silakan Deploy ulang Apps Script Anda.");
+                    console.warn("URL Google Script belum diset dengan benar.");
+                    return;
+                }
+                
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Mode no-cors penting agar tidak diblokir browser
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(() => console.log("Data terkirim ke Google Sheets"))
+                .catch(error => console.error("Gagal kirim ke Google Sheets:", error));
+            }
+
+            async function loadDataFromCloud() {
+                try {
+                    const response = await fetch(`${API_URL}/latest`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Master-Key': API_KEY
+                        },
+                        cache: 'no-store' // Mencegah browser menampilkan data usang (cache)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Gagal mengambil data dari server. Status: " + response.status);
+                    }
+
+                    const result = await response.json();
+                    
+                    // JSONBin v3 menyimpan data di dalam properti .record
+                    const data = result.record; 
+                    
+                    if (Array.isArray(data)) {
+                        // Pindahkan logika render tabel ke sini, setelah data siap
+                        tableBody.innerHTML = ''; // Reset tabel
+                        data.forEach(d => addRowToTable(d.layanan, d.nama, d.tanggal, d.desa, d.umur, d.jk, d.telepon));
+                        updateBadge();
+                        updateFormHeight();
+                    }
+                } catch (error) {
+                    console.error("Gagal memuat data:", error);
+                    throw error; // Lempar error agar data lokal (Local Storage) bisa dipanggil sebagai cadangan
+                }
+            }
+
+            // --- FUNGSI RENDER GRAFIK ---
+
+            // --- FUNGSI RENDER TABEL ---
+            function addRowToTable(layanan, nama, tanggal, desa, umur, jk, telepon) {
+                const rowNumber = tableBody.querySelectorAll('tr.data-row').length + 1;
+                const formattedQueue = 'ANT-' + String(rowNumber).padStart(3, '0');
+                let newRowHTML = '<tr class="bg-white hover:bg-gray-50 transition-colors duration-200 data-row group">';
+                newRowHTML += `<td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm text-gray-500 text-center font-bold row-number"><span class="bg-blue-100 text-blue-800 py-1 px-2 rounded-md shadow-sm">${formattedQueue}</span></td>`;
+                newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${layanan}</td>`;
+                newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${nama}</td>`;
+                newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${tanggal}</td>`;
+                newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${desa}</td>`;
+                newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${umur}</td>`;
+                newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${jk}</td>`;
+                newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${telepon}</td>`;
+                newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 text-center">
+                    <button type="button" class="text-green-500 hover:text-green-700 p-2 rounded-full hover:bg-green-50 table-action-btn btn-download-row" title="Unduh PDF"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></button>
+                    <button type="button" class="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 table-action-btn btn-edit" title="Edit"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
+                    <button type="button" class="text-red-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 table-action-btn btn-delete" title="Hapus"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                </td>`;
+                newRowHTML += '</tr>';
+                tableBody.insertAdjacentHTML('beforeend', newRowHTML);
+                const newRowElement = tableBody.lastElementChild;
+                newRowElement.classList.add('animate-fade-in-row');
+            }
+
+            function loadDataFromLocal() {
+                const saved = localStorage.getItem('antrian_layanan');
+                if (saved) {
+                    try {
+                        const rows = JSON.parse(saved);
+                        rows.forEach(d => addRowToTable(d.layanan, d.nama, d.tanggal, d.desa, d.umur, d.jk, d.telepon));
+                        updateBadge();
+                    } catch(e) { console.error("Gagal memuat data", e); }
+                }
+            }
+
+            // 1. Inisialisasi Header Tabel Langsung
+            // Tambahkan kolom No dan Aksi
+            const headers = ['No. Antrian', 'Jenis Layanan', 'Nama Lengkap', 'Tanggal', 'Desa', 'Umur', 'Jenis Kelamin', 'No. Telepon', 'Aksi'];
+            let headerHTML = '<tr class="border-b border-gray-200">';
+            headers.forEach((h, index) => {
+                let widthClass = (index === 0 || index === headers.length - 1) ? 'w-16 text-center' : 'text-left';
+                
+                headerHTML += `<th scope="col" class="px-6 py-4 text-xs font-bold text-gray-600 uppercase tracking-wider ${widthClass} bg-gray-50">
+                    ${h === 'No. Antrian' ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1 mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" /></svg> No. Antrian' : h}
+                </th>`;
+            });
+            headerHTML += '</tr>';
+            tableHead.innerHTML = headerHTML;
+
+            // --- FITUR VALIDASI REAL-TIME ---
+            function showError(input, message) {
+                let errorEl = input.parentNode.querySelector('.validation-error');
+                if (!errorEl) {
+                    errorEl = document.createElement('p');
+                    errorEl.className = 'text-red-500 text-xs mt-1 font-medium validation-error transition-all duration-200';
+                    input.parentNode.appendChild(errorEl);
+                }
+                errorEl.textContent = message;
+                input.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+                input.classList.remove('border-gray-200', 'focus:ring-blue-500', 'focus:border-blue-500');
+            }
+
+            function clearError(input) {
+                const errorEl = input.parentNode.querySelector('.validation-error');
+                // if (errorEl) {
+                //     errorEl.remove();
+                // }
+                // input.classList.remove('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+                // input.classList.add('border-gray-200', 'focus:ring-blue-500', 'focus:border-blue-500');
+            }
+
+            const inputTelepon = document.getElementById('input-telepon');
+            if (inputTelepon) {
+                inputTelepon.addEventListener('input', function() {
+                    if (/\D/.test(this.value)) showError(this, 'Nomor telepon hanya boleh berisi angka.');
+                    else clearError(this);
+                });
+            }
+
+            if (btnTambahData) {
+                btnTambahData.addEventListener('click', function() {
+                    // Ambil nilai dari form
+                    const inputLayanan = document.getElementById('input-layanan');
+                    const inputNama = document.getElementById('input-nama');
+                    const inputTanggal = document.getElementById('input-tanggal');
+                    const inputDesa = document.getElementById('input-desa');
+                    const inputUmur = document.getElementById('input-umur');
+                    const inputJk = document.getElementById('input-jk');
+                    const inputTelepon = document.getElementById('input-telepon');
+
+                    const layanan = inputLayanan.value;
+                    const nama = inputNama.value.trim();
+                    const tanggal = inputTanggal.value;
+                    const desa = inputDesa.value.trim();
+                    const umur = inputUmur.value.trim();
+                    const jk = inputJk.value;
+                    const telepon = inputTelepon.value.trim();
+
+                    // Validasi input wajib
+                    if (!nama || !tanggal || !desa || !umur || !telepon) {
+                        alert('Mohon lengkapi semua data sebelum melanjutkan.');
+                        return;
+                    }
+
+                    // Cek jika masih ada error validasi visual
+                    if (document.querySelector('.validation-error')) {
+                        alert('Mohon perbaiki kesalahan pada form (teks berwarna merah) sebelum menambahkan data.');
+                        return;
+                    }
+
+                    if (editingRow) {
+                        // UPDATE DATA LAMA
+                        const cells = editingRow.querySelectorAll('td');
+                        cells[1].innerText = layanan;
+                        cells[2].innerText = nama;
+                        cells[3].innerText = tanggal;
+                        cells[4].innerText = desa;
+                        cells[5].innerText = umur;
+                        cells[6].innerText = jk;
+                        cells[7].innerText = telepon;
+                        
+                        alert('Data berhasil diperbarui!');
+                        editingRow = null;
+                        btnTambahData.innerHTML = '+ Tambahkan ke Tabel Antrian';
+                    } else {
+                        // TAMBAH DATA BARU
+                        addRowToTable(layanan, nama, tanggal, desa, umur, jk, telepon);
+                        const currentQueueNum = tableBody.querySelectorAll('tr.data-row').length;
+                        alert(`Berhasil Ditambahkan!\nNomor Antrian Anda adalah: ANT-${String(currentQueueNum).padStart(3, '0')}`);
+
+                        // KIRIM KE GOOGLE SHEETS (Baris Baru)
+                        submitToGoogleSheets({
+                            layanan: layanan,
+                            nama: nama,
+                            tanggal: tanggal,
+                            desa: desa,
+                            umur: umur,
+                            jk: jk,
+                            telepon: telepon
+                        });
+                    }
+
+                    // Simpan ke Local Storage dan Cloud JSONBin
+                    saveDataToLocal();
+                    saveDataToCloud();
+
+                    // Reset Form agar siap untuk data berikutnya
+                    inputNama.value = '';
+                    inputTanggal.value = '';
+                    inputDesa.value = '';
+                    inputUmur.value = '';
+                    inputTelepon.value = '';
+                    inputLayanan.selectedIndex = 0;
+                    inputJk.selectedIndex = 0;
+
+                    // Update Badge & Pindah ke Tab Review
+                    updateBadge();
+                    switchTab('review');
+                });
+
+                // Event Listener untuk Tabel (Delegation Edit & Hapus)
+                tableBody.addEventListener('click', function(e) {
+                    const btnEdit = e.target.closest('.btn-edit');
+                    const btnDelete = e.target.closest('.btn-delete');
+                    const btnDownloadRow = e.target.closest('.btn-download-row');
+                    
+                    if (btnEdit) {
+                        editingRow = btnEdit.closest('tr');
+                        const cells = editingRow.querySelectorAll('td');
+                        
+                        // Isi form dengan data yang akan diedit
+                        document.getElementById('input-nama').value = cells[2].innerText;
+                        document.getElementById('input-tanggal').value = cells[3].innerText;
+                        document.getElementById('input-desa').value = cells[4].innerText;
+                        document.getElementById('input-umur').value = cells[5].innerText;
+                        document.getElementById('input-jk').value = cells[6].innerText;
+                        document.getElementById('input-telepon').value = cells[7].innerText;
+                        
+                        const inputLayanan = document.getElementById('input-layanan');
+                        const layananValue = cells[1].innerText;
+                        for (let i = 0; i < inputLayanan.options.length; i++) {
+                            if (inputLayanan.options[i].value === layananValue || inputLayanan.options[i].text === layananValue) {
+                                inputLayanan.selectedIndex = i;
+                                break;
+                            }
+                        }
+                        
+                        // Ubah teks tombol menjadi Simpan Perubahan
+                        btnTambahData.innerHTML = 'Simpan Perubahan';
+                        
+                        // Pindah ke tab input
+                        switchTab('input');
+                    }
+
+                    if (btnDelete) {
+                        const rowToDelete = btnDelete.closest('tr');
+                        if (editingRow === rowToDelete) {
+                            editingRow = null;
+                            btnTambahData.innerHTML = '+ Tambahkan ke Tabel Antrian';
+                        }
+                        rowToDelete.remove();
+                        // Update Nomor Urut
+                        const rows = tableBody.querySelectorAll('tr.data-row');
+                        rows.forEach((row, index) => {
+                            const newNum = 'ANT-' + String(index + 1).padStart(3, '0');
+                            row.querySelector('.row-number span').textContent = newNum;
+                        });
+                        saveDataToLocal(); // Simpan perubahan setelah hapus
+                        
+                        saveDataToCloud(); // Simpan perubahan ke cloud setelah hapus
+                        updateBadge();
+                        updateFormHeight();
+                    }
+
+                    if (btnDownloadRow) {
+                        const rowToDownload = btnDownloadRow.closest('tr');
+                        const cells = rowToDownload.querySelectorAll('td');
+
+                        const data = {
+                            noAntrian: cells[0].innerText,
+                            layanan: cells[1].innerText,
+                            nama: cells[2].innerText,
+                            tanggal: cells[3].innerText,
+                            desa: cells[4].innerText,
+                            umur: cells[5].innerText,
+                            jk: cells[6].innerText,
+                            telepon: cells[7].innerText
+                        };
+
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF();
+
+                        // Header Dokumen
+                        doc.setFontSize(14);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('BUKTI PENGAJUAN LAYANAN', 105, 20, { align: 'center' });
+                        doc.setFontSize(11);
+                        doc.setFont('helvetica', 'normal');
+                        doc.text('KECAMATAN PLEMAHAN', 105, 27, { align: 'center' });
+                        doc.line(15, 32, 195, 32);
+
+                        // Detail Data
+                        doc.setFontSize(12);
+                        let y = 45;
+
+                        const addDetail = (label, value) => {
+                            doc.text(label, 20, y);
+                            doc.text(`: ${value}`, 70, y);
+                            y += 10;
+                        };
+
+                        addDetail('Nomor Antrian', data.noAntrian);
+                        addDetail('Jenis Layanan', data.layanan);
+                        addDetail('Nama Pemohon', data.nama);
+                        addDetail('Tanggal', data.tanggal);
+                        addDetail('Desa', data.desa);
+                        addDetail('Umur', `${data.umur} tahun`);
+                        addDetail('Jenis Kelamin', data.jk);
+                        addDetail('No. Telepon', data.telepon);
+
+                        doc.line(15, y, 195, y);
+                        doc.setFontSize(9);
+                        doc.setTextColor(150);
+                        doc.text('Harap simpan bukti ini untuk keperluan verifikasi. Terima kasih.', 20, y + 10);
+
+                        // Simpan PDF
+                        const safeFileName = data.nama.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                        doc.save(`Permohonan-${data.noAntrian}-${safeFileName}.pdf`);
+                    }
+                });
+            }
+
+            // --- FUNGSI EXPORT PDF DENGAN FILTER ---
+            function generatePdf(filterService = null) {
+                const allRows = tableBody.querySelectorAll('tr.data-row');
+                if (allRows.length === 0) {
+                    alert('Tabel antrian kosong. Silakan tambahkan data terlebih dahulu.');
+                    return;
+                }
+
+                const filteredRows = filterService ? Array.from(allRows).filter(row => row.cells[1].innerText === filterService) : allRows;
+
+                if (filteredRows.length === 0) {
+                    alert(`Tidak ada data antrian untuk layanan "${filterService}".`);
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                // Header Dokumen
+                doc.setFontSize(14);
+                doc.text('PEMERINTAH KABUPATEN KEDIRI', 105, 15, { align: 'center' });
+                doc.text('KECAMATAN PLEMAHAN', 105, 22, { align: 'center' });
+                doc.setFontSize(12);
+                const title = filterService ? `DAFTAR ANTRIAN - ${filterService}` : 'DAFTAR ANTRIAN PERMOHONAN LAYANAN';
+                doc.text(title, 105, 32, { align: 'center', maxWidth: 180 });
+                doc.line(15, 35, 195, 35);
+
+                // Data Tabel
+                const tableData = [];
+                filteredRows.forEach((row, index) => {
+                    const cells = row.querySelectorAll('td');
+                    const queueNo = cells[0].innerText;
+                    tableData.push([
+                        queueNo, cells[1].innerText, cells[2].innerText, cells[3].innerText,
+                        cells[4].innerText, cells[5].innerText, cells[6].innerText, cells[7].innerText
+                    ]);
+                });
+
+                doc.autoTable({
+                    startY: 40,
+                    head: [['No. Antrian', 'Layanan', 'Nama', 'Tanggal', 'Desa', 'Umur', 'JK', 'No. HP']],
+                    body: tableData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [22, 163, 74] },
+                    styles: { fontSize: 8 }
+                });
+
+                // Simpan PDF
+                const dateStr = new Date().toISOString().slice(0, 10);
+                const safeFilterName = filterService ? filterService.replace(/[^a-z0-9]/gi, '_').slice(0, 30) : 'Semua';
+                doc.save(`Antrian-${safeFilterName}-${dateStr}.pdf`);
+            }
+
+            // --- LOGIKA DROPDOWN EXPORT PDF ---
+            if (btnExportDropdown) {
+                btnExportDropdown.addEventListener('click', () => {
+                    exportMenu.classList.toggle('hidden');
+                    // Isi dropdown saat dibuka
+                    if (!exportMenu.classList.contains('hidden')) {
+                        exportOptionsContainer.innerHTML = ''; // Kosongkan dulu
+                        
+                        // Opsi "Export Semua"
+                        let optionsHTML = '<a href="#" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 font-bold" role="menuitem" tabindex="-1" data-service="*">Export Semua Data</a>';
+                        optionsHTML += '<div class="border-t border-gray-100 my-1"></div>';
+
+                        // Ambil opsi dari select
+                        Array.from(inputLayanan.options).forEach(option => {
+                            optionsHTML += `<a href="#" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem" tabindex="-1" data-service="${option.value}">${option.value}</a>`;
+                        });
+                        exportOptionsContainer.innerHTML = optionsHTML;
+                    }
+                });
+
+                exportMenu.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'A') {
+                        e.preventDefault();
+                        const service = e.target.dataset.service;
+                        generatePdf(service === '*' ? null : service);
+                        exportMenu.classList.add('hidden');
+                    }
+                });
+
+                // Sembunyikan dropdown jika klik di luar
+                document.addEventListener('click', (e) => {
+                    if (!btnExportDropdown.contains(e.target) && !exportMenu.contains(e.target)) {
+                        exportMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Event Listener untuk Tombol Reset Tabel
+            if (btnResetTabel) {
+                btnResetTabel.addEventListener('click', function() {
+                    if(confirm('Apakah Anda yakin ingin menghapus semua data di tabel?')) {
+                        // Hapus semua baris data (bukan filler, bukan live row)
+                        const rows = tableBody.querySelectorAll('tr.data-row');
+                        rows.forEach(row => row.remove());
+                        localStorage.setItem('antrian_layanan', '[]'); // Set array kosong agar tidak di-overwrite cloud
+                        
+                        saveDataToCloud(); // Update cloud menjadi kosong
+                        updateBadge();
+                        updateFormHeight();
+                    }
+                });
+            }
+
+            // Event Listener untuk Tombol Kirim (WhatsApp)
+            if (btnKirim) {
+                btnKirim.addEventListener('click', function() {
+                    const rows = tableBody.querySelectorAll('tr.data-row');
+                    
+                    if (rows.length === 0) {
+                        alert('Tabel antrian masih kosong. Silakan tambahkan data terlebih dahulu.');
+                        return;
+                    }
+
+                    let message = "Halo Admin Pelayanan Kec. Plemahan, saya ingin mengajukan permohonan layanan sebagai berikut:%0A%0A";
+                    
+                    rows.forEach((row, index) => {
+                        const cells = row.querySelectorAll('td');
+                        // Mapping Index:
+                        // 0: No, 1: Layanan, 2: Nama, 3: Desa, 4: Umur, 5: JK, 6: Telepon
+
+                        const queueNo = 'ANT-' + String(index + 1).padStart(3, '0');
+                        message += `*[${queueNo}] ${cells[1].innerText}*%0A`;
+                        message += `   - Nama: ${cells[2].innerText}%0A`;
+                        message += `   - Tanggal: ${cells[3].innerText}%0A`;
+                        message += `   - Desa: ${cells[4].innerText}%0A`;
+                        message += `   - Umur: ${cells[5].innerText} tahun%0A`;
+                        message += `   - JK: ${cells[6].innerText}%0A`;
+                        message += `   - No. HP: ${cells[7].innerText}%0A%0A`;
+                    });
+
+                    message += "Mohon segera diproses. Terima kasih.";
+
+                    // Buka WhatsApp (Ganti nomor sesuai kebutuhan)
+                    window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+                });
+            }
+
+            // Load data saat halaman pertama kali dibuka
+            loadDataFromCloud().catch(() => {
+                console.warn("Gagal memuat dari server, menggunakan data lokal sementara.");
+                loadDataFromLocal();
+            });
+
+            // --- LOGIKA TOMBOL KEMBALI KE ATAS ---
+            const backToTopButton = document.getElementById('back-to-top');
+
+            if (backToTopButton && scrollableContainer) {
+                scrollableContainer.addEventListener('scroll', () => {
+                    if (scrollableContainer.scrollTop > 300) {
+                        backToTopButton.classList.add('visible');
+                    } else {
+                        backToTopButton.classList.remove('visible');
+                    }
+                });
+
+                backToTopButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    scrollableContainer.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

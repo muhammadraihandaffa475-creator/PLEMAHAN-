@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grafik Layanan - One Gate Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Library Chart.js untuk Grafik -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="poster">
+    <div class="top-wrap" style="grid-template-columns: 250px 1fr; align-items: flex-start;">
+        <div class="left-brand" style="min-height: 0;">
+            <div class="logo-row">
+                <img src="https://pbs.twimg.com/profile_images/1574979399744512003/NeQOapZP_400x400.jpg" alt="Logo Kabupaten Kediri" class="logo-img">
+                <div class="brand-stack">
+                    <div class="brand-text">
+                        <div class="small">PEMKAB KEDIRI</div>
+                        <div class="big">KECAMATAN</div>
+                        <div class="sub">PLEMAHAN</div>
+                    </div>
+                </div>
+            </div>
+            <div class="small-logos-group">
+                <img src="https://static.vecteezy.com/system/resources/previews/028/535/743/non_2x/logo-slogan-kediri-berbudaya-free-vector.jpg" alt="Logo Berbudaya" class="logo-img-small">
+                <img src="https://www.shutterstock.com/image-vector/vector-logo-mas-bup-kediri-260nw-2300303319.jpg" alt="Logo Mas Bup" class="logo-img-small">
+                <img src="https://bpmsph.ditjenpkh.pertanian.go.id/storage/master/img/thumb/BdpGfOw1nsaplseK20250925083312.png" alt="Logo Tambahan" class="logo-img-small">
+            </div>
+            <div class="left-shape" style="position: relative; top: 0; width: 100%; height: auto; border-radius: 24px; min-height: 300px;">
+                <div class="quote-box">
+                    <div>
+                        <div class="quote">“</div>
+                        <h3>GRAFIK & STATISTIK LAYANAN</h3>
+                    </div>
+                </div>
+            </div>
+             <div class="vertical-slider-container" style="margin-top: 20px;" data-page="grafik">
+                <div class="vertical-slider-viewport">
+                    <div class="vertical-slider-track">
+                        <a href="index.html" class="tab" style="width: 100%; border-radius: 12px;">
+                            <span>Kembali ke Beranda</span>
+                        </a>
+                        <a href="layanan.html" class="tab" style="width: 100%; border-radius: 12px;">
+                            <span>Lihat Daftar Layanan</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="vertical-slider-nav">
+                    <button class="v-slide-btn v-slide-up" aria-label="Geser ke atas">▲</button>
+                    <button class="v-slide-btn v-slide-down" aria-label="Geser ke bawah">▼</button>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div class="title-block" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;">
+                <div>
+                    <div class="title" style="font-size: 48px; margin-bottom: 12px;">
+                        Statistik Penggunaan Layanan
+                    </div>
+                    <p style="color: var(--muted); max-width: 600px; line-height: 1.6;">
+                        Visualisasi data jumlah permohonan untuk setiap jenis layanan yang tersedia. Data diperbarui secara real-time.
+                    </p>
+                </div>
+                <button id="btn-refresh-chart" class="tab" style="width: auto; padding: 10px 20px; border-radius: 12px; flex-shrink: 0;">
+                    <span>Refresh Data</span>
+                </button>
+            </div>
+            <div class="p-4 bg-white rounded-xl border border-gray-200 shadow-inner mt-8" style="height: calc(100vh - 300px); position: relative; display: flex; align-items: center; justify-content: center;">
+                <div id="chart-loader" class="chart-loader"></div>
+                <canvas id="serviceChart" width="400" height="400" style="display: none;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const API_KEY = '$2a$10$h08CHo/2k.EXdddjlF1Jj.wgLWCrn5ygHtQqUzOj7fZxG5RFYTYl6';
+    const BIN_ID = '69d70e6e36566621a892442d';
+    const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+    const btnRefresh = document.getElementById('btn-refresh-chart');
+    const chartLoader = document.getElementById('chart-loader');
+    const chartCanvas = document.getElementById('serviceChart');
+    const ctx = chartCanvas.getContext('2d');
+    let serviceChartInstance = null;
+
+    async function loadAndRenderChart() {
+        try {
+            if (chartLoader) chartLoader.classList.add('visible');
+            const response = await fetch(`${API_URL}/latest`, {
+                method: 'GET', // Pastikan method adalah GET
+                headers: { 'X-Master-Key': API_KEY },
+                cache: 'no-store'
+            });
+            if (!response.ok) throw new Error('Gagal memuat data');
+            
+            const result = await response.json();
+            const dataAntrian = result.record || [];
+            renderServiceChart(dataAntrian);
+            console.log("Data antrian berhasil dimuat:", dataAntrian);
+
+        } catch (error) {
+            console.error("Gagal memuat data dari cloud:", error);
+            if (!ctx) return;
+            // Clear previous content
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+            chartCanvas.style.display = 'block'; // Pastikan canvas terlihat
+            // Set font and color for error message
+            ctx.font = "16px Montserrat, sans-serif";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#888";
+            ctx.textAlign = "center";
+            ctx.fillText("Gagal memuat data grafik.", ctx.canvas.width / 2, ctx.canvas.height / 2);
+        } finally {
+            // Sembunyikan loader setelah selesai (baik berhasil maupun gagal)
+            if (chartLoader) chartLoader.classList.remove('visible');
+        }
+    }
+
+    function renderServiceChart(dataAntrian) {
+        if (!ctx) return;
+
+        const serviceCounts = {};
+        dataAntrian.forEach(item => {
+            serviceCounts[item.layanan] = (serviceCounts[item.layanan] || 0) + 1;
+        });
+
+        // Sort the services by count in descending order
+        const sortedServices = Object.entries(serviceCounts).sort(([, a], [, b]) => b - a);
+
+        // Extract sorted labels and data
+        const labels = sortedServices.map(item => item[0]);
+        const data = sortedServices.map(item => item[1]);
+
+        if (data.length === 0) {
+            if (serviceChartInstance) serviceChartInstance.destroy(); // Hancurkan chart lama jika ada
+            chartCanvas.style.display = 'block'; // Pastikan canvas terlihat
+            // Tampilkan pesan jika tidak ada data
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.font = "16px Montserrat, sans-serif";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#888";
+            ctx.textAlign = "center";
+            ctx.fillText("Tidak ada data permohonan untuk ditampilkan.", ctx.canvas.width / 2, ctx.canvas.height / 2);
+            
+            return; // Hentikan rendering chart jika tidak ada data
+        }
+
+        if (serviceChartInstance) {
+            serviceChartInstance.destroy();
+        }
+
+        chartCanvas.style.display = 'block'; // Pastikan canvas terlihat
+
+        // Palet warna baru yang sesuai tema
+        const backgroundColors = data.map((_, i) => `hsla(${140 + i * 15}, 60%, 30%, 0.8)`);
+        const borderColors = data.map((_, i) => `hsla(${140 + i * 15}, 60%, 30%, 1)`);
+
+        serviceChartInstance = new Chart(ctx, {
+            type: 'bar', // Mengubah tipe grafik menjadi bar
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Permohonan',
+                    data: data,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 2,
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Membuat grafik menjadi horizontal
+                responsive: true, 
+                maintainAspectRatio: false,
+                animation: { animateScale: true, animateRotate: true },
+                plugins: {
+                    legend: {
+                        display: false // Legenda tidak terlalu dibutuhkan untuk bar chart
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                return ` ${value} Permohonan`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1, // Hanya tampilkan angka bulat di sumbu X
+                            color: 'var(--muted)'
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: 'var(--text)'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    loadAndRenderChart();
+
+    if (btnRefresh) {
+        btnRefresh.addEventListener('click', loadAndRenderChart);
+    }
+});
+</script>
+</body>
+</html>

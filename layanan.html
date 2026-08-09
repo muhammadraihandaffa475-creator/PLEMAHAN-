@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Layanan - One Gate Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+<div class="poster">
+    <div class="top-wrap" style="grid-template-columns: 250px 1fr; align-items: flex-start;">
+        <div class="left-brand" style="min-height: 0;">
+            <div class="logo-row">
+                <img src="https://pbs.twimg.com/profile_images/1574979399744512003/NeQOapZP_400x400.jpg" alt="Logo Kabupaten Kediri" class="logo-img">
+                <div class="brand-stack">
+                    <div class="brand-text">
+                        <div class="small">PEMKAB KEDIRI</div>
+                        <div class="big">KECAMATAN</div>
+                        <div class="sub">PLEMAHAN</div>
+                    </div>
+                </div>
+            </div>
+            <div class="small-logos-group">
+                <img src="https://static.vecteezy.com/system/resources/previews/028/535/743/non_2x/logo-slogan-kediri-berbudaya-free-vector.jpg" alt="Logo Berbudaya" class="logo-img-small">
+                <img src="https://www.shutterstock.com/image-vector/vector-logo-mas-bup-kediri-260nw-2300303319.jpg" alt="Logo Mas Bup" class="logo-img-small">
+                <img src="https://bpmsph.ditjenpkh.pertanian.go.id/storage/master/img/thumb/BdpGfOw1nsaplseK20250925083312.png" alt="Logo Tambahan" class="logo-img-small">
+            </div>
+            <div class="left-shape" style="position: relative; top: 0; width: 100%; height: auto; border-radius: 24px; min-height: 300px;">
+                <div class="quote-box">
+                    <div>
+                        <div class="quote">“</div>
+                        <h3>DAFTAR SEMUA LAYANAN KAMI</h3>
+                    </div>
+                </div>
+            </div>
+             <div class="vertical-slider-container" style="margin-top: 20px;" data-page="layanan">
+                <div class="vertical-slider-viewport">
+                    <div class="vertical-slider-track">
+                        <a href="index.html" class="tab" style="width: 100%; border-radius: 12px;">
+                            <span>Kembali ke Beranda</span>
+                        </a>
+                        <a href="permohonan.html" class="tab" style="width: 100%; border-radius: 12px;">
+                            <span>Ajukan Permohonan</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="vertical-slider-nav">
+                    <button class="v-slide-btn v-slide-up" aria-label="Geser ke atas">▲</button>
+                    <button class="v-slide-btn v-slide-down" aria-label="Geser ke bawah">▼</button>
+                </div>
+            </div>
+        </div>
+        <div class="main">
+            <div class="title-block" style="margin-bottom: 24px;">
+                <div class="title" style="font-size: 48px;">
+                    Daftar Layanan
+                </div>
+                <p style="color: var(--muted); max-width: 600px; line-height: 1.6;">
+                    Pilih salah satu layanan di bawah ini untuk melihat detail atau langsung mengajukan permohonan.
+                </p>
+            </div>
+            <div class="service-cards-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Kartu layanan akan di-generate oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const services = [
+            "SAHAJA LEKAT", "Penerbitan Surat Dispensasi Nikah", "Verifikasi Surat Pengantar Pembuatan Surat Keterangan Catatan Kepolisian",
+            "Verifikasi Surat Keterangan Tidak Mampu", "Verifikasi Surat Rekomendasi Ijin Kegiatan/Keramaian", "Verifikasi Surat Pernyataan Ahli Waris",
+            "Verifikasi Surat Keterangan Usaha", "Permohonan Legalisasi Dokumen", "Verifikasi atau Pengesahan Dokumen Lainnya",
+            "Pelayanan Konsultasi", "Penerbitan Rekomendasi Pencairan Dana APBDes", "Penerbitan Rekomendasi Rotasi/Pemberhentian/Pengisian/Pelantikan Perangkat Desa",
+            "Penerbitan Akta Jual Beli (AJB)/Akta Hibah (AH)/Akta Pembagian Hak Bersama (APHB) oleh Pejabat Pembuat Akta Tanah Sementara (PPATS)",
+            "Pendampingan Pembentukan Produk Hukum Desa", "Layanan Pengaduan"
+        ];
+        const icons = ["⚡️", "💍", "👮", "📄", "🎉", "👨‍👩‍👧‍👦", "📈", "📜", "✅", "💬", "💰", "🔄", "🏡", "⚖️", "📢"];
+        const container = document.querySelector('.service-cards-container');
+        
+        services.forEach((service, index) => {
+            const card = document.createElement('a');
+            card.href = `permohonan.html?layanan=${encodeURIComponent(service)}`;
+            card.className = 'tab';
+            card.style.flexDirection = 'column';
+            card.style.justifyContent = 'center';
+            card.style.textAlign = 'center';
+            card.style.gap = '12px';
+            card.style.padding = '24px 16px';
+            card.innerHTML = `
+                <div class="icon" style="margin-bottom: 0;">${icons[index] || '📁'}</div>
+                <span style="font-size: 13px; text-transform: none; font-weight: 600;">${service}</span>
+            `;
+            container.appendChild(card);
+        });
+    });
+</script>
+</body>
+</html>
