@@ -125,6 +125,10 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-2">No Telepon (WhatsApp)</label>
                             <input type="tel" id="input-telepon" required class="form-input" placeholder="08xxxxxxxxxx">
                         </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Keterangan (Opsional)</label>
+                            <textarea id="input-keterangan" class="form-input" rows="3" placeholder="Contoh: Pengajuan untuk keperluan beasiswa, dll."></textarea>
+                        </div>
                     </div>
 
                         <button type="button" id="btn-tambah-data" class="btn-primary">
@@ -373,6 +377,7 @@
                 document.getElementById('input-desa').value = '';
                 document.getElementById('input-umur').value = '';
                 document.getElementById('input-telepon').value = '';
+                document.getElementById('input-keterangan').value = '';
                 document.getElementById('input-layanan').selectedIndex = 0;
                 document.getElementById('input-jk').selectedIndex = 0;
                 switchTab('input');
@@ -405,7 +410,8 @@
                         desa: cells[4].innerText,
                         umur: cells[5].innerText,
                         jk: cells[6].innerText,
-                        telepon: cells[7].innerText
+                        telepon: cells[7].innerText,
+                        keterangan: cells[8].innerText
                     });
                 });
                 localStorage.setItem('antrian_layanan', JSON.stringify(rows));
@@ -424,7 +430,8 @@
                         desa: cells[4].innerText,
                         umur: cells[5].innerText,
                         jk: cells[6].innerText,
-                        telepon: cells[7].innerText
+                        telepon: cells[7].innerText,
+                        keterangan: cells[8].innerText
                     });
                 });
 
@@ -501,7 +508,7 @@
                     if (Array.isArray(data)) {
                         // Pindahkan logika render tabel ke sini, setelah data siap
                         tableBody.innerHTML = ''; // Reset tabel
-                        data.forEach(d => addRowToTable(d.layanan, d.nama, d.tanggal, d.desa, d.umur, d.jk, d.telepon));
+                        data.forEach(d => addRowToTable(d.layanan, d.nama, d.tanggal, d.desa, d.umur, d.jk, d.telepon, d.keterangan || ''));
                         updateBadge();
                         updateFormHeight();
                     }
@@ -514,7 +521,7 @@
             // --- FUNGSI RENDER GRAFIK ---
 
             // --- FUNGSI RENDER TABEL ---
-            function addRowToTable(layanan, nama, tanggal, desa, umur, jk, telepon) {
+            function addRowToTable(layanan, nama, tanggal, desa, umur, jk, telepon, keterangan) {
                 const rowNumber = tableBody.querySelectorAll('tr.data-row').length + 1;
                 const formattedQueue = 'ANT-' + String(rowNumber).padStart(3, '0');
                 let newRowHTML = '<tr class="bg-white hover:bg-gray-50 transition-colors duration-200 data-row group">';
@@ -526,6 +533,7 @@
                 newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${umur}</td>`;
                 newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${jk}</td>`;
                 newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 font-medium">${telepon}</td>`;
+                newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">${keterangan || '-'}</td>`;
                 newRowHTML += `<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 text-center">
                     <button type="button" class="text-green-500 hover:text-green-700 p-2 rounded-full hover:bg-green-50 table-action-btn btn-download-row" title="Unduh PDF"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></button>
                     <button type="button" class="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 table-action-btn btn-edit" title="Edit"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
@@ -542,7 +550,7 @@
                 if (saved) {
                     try {
                         const rows = JSON.parse(saved);
-                        rows.forEach(d => addRowToTable(d.layanan, d.nama, d.tanggal, d.desa, d.umur, d.jk, d.telepon));
+                        rows.forEach(d => addRowToTable(d.layanan, d.nama, d.tanggal, d.desa, d.umur, d.jk, d.telepon, d.keterangan || ''));
                         updateBadge();
                     } catch(e) { console.error("Gagal memuat data", e); }
                 }
@@ -550,7 +558,7 @@
 
             // 1. Inisialisasi Header Tabel Langsung
             // Tambahkan kolom No dan Aksi
-            const headers = ['No. Antrian', 'Jenis Layanan', 'Nama Lengkap', 'Tanggal', 'Desa', 'Umur', 'Jenis Kelamin', 'No. Telepon', 'Aksi'];
+            const headers = ['No. Antrian', 'Jenis Layanan', 'Nama Lengkap', 'Tanggal', 'Desa', 'Umur', 'Jenis Kelamin', 'No. Telepon', 'Keterangan', 'Aksi'];
             let headerHTML = '<tr class="border-b border-gray-200">';
             headers.forEach((h, index) => {
                 let widthClass = (index === 0 || index === headers.length - 1) ? 'w-16 text-center' : 'text-left';
@@ -602,6 +610,7 @@
                     const inputUmur = document.getElementById('input-umur');
                     const inputJk = document.getElementById('input-jk');
                     const inputTelepon = document.getElementById('input-telepon');
+                    const inputKeterangan = document.getElementById('input-keterangan');
 
                     const layanan = inputLayanan.value;
                     const nama = inputNama.value.trim();
@@ -610,6 +619,7 @@
                     const umur = inputUmur.value.trim();
                     const jk = inputJk.value;
                     const telepon = inputTelepon.value.trim();
+                    const keterangan = inputKeterangan.value.trim();
 
                     // Validasi input wajib
                     if (!nama || !tanggal || !desa || !umur || !telepon) {
@@ -633,13 +643,14 @@
                         cells[5].innerText = umur;
                         cells[6].innerText = jk;
                         cells[7].innerText = telepon;
+                        cells[8].innerText = keterangan || '-';
                         
                         alert('Data berhasil diperbarui!');
                         editingRow = null;
                         btnTambahData.innerHTML = '+ Tambahkan ke Tabel Antrian';
                     } else {
                         // TAMBAH DATA BARU
-                        addRowToTable(layanan, nama, tanggal, desa, umur, jk, telepon);
+                        addRowToTable(layanan, nama, tanggal, desa, umur, jk, telepon, keterangan);
                         const currentQueueNum = tableBody.querySelectorAll('tr.data-row').length;
                         alert(`Berhasil Ditambahkan!\nNomor Antrian Anda adalah: ANT-${String(currentQueueNum).padStart(3, '0')}`);
 
@@ -651,7 +662,8 @@
                             desa: desa,
                             umur: umur,
                             jk: jk,
-                            telepon: telepon
+                            telepon: telepon,
+                            keterangan: keterangan
                         });
                     }
 
@@ -665,6 +677,7 @@
                     inputDesa.value = '';
                     inputUmur.value = '';
                     inputTelepon.value = '';
+                    inputKeterangan.value = '';
                     inputLayanan.selectedIndex = 0;
                     inputJk.selectedIndex = 0;
 
@@ -694,6 +707,7 @@
                         document.getElementById('input-umur').value = cells[5].innerText;
                         document.getElementById('input-jk').value = cells[6].innerText;
                         document.getElementById('input-telepon').value = cells[7].innerText;
+                        document.getElementById('input-keterangan').value = cells[8].innerText === '-' ? '' : cells[8].innerText;
                         
                         const inputLayanan = document.getElementById('input-layanan');
                         const layananValue = cells[1].innerText;
@@ -743,7 +757,8 @@
                             desa: cells[4].innerText,
                             umur: cells[5].innerText,
                             jk: cells[6].innerText,
-                            telepon: cells[7].innerText
+                            telepon: cells[7].innerText,
+                            keterangan: cells[8].innerText
                         };
 
                         const { jsPDF } = window.jspdf;
@@ -776,6 +791,7 @@
                         addDetail('Umur', `${data.umur} tahun`);
                         addDetail('Jenis Kelamin', data.jk);
                         addDetail('No. Telepon', data.telepon);
+                        addDetail('Keterangan', data.keterangan);
 
                         doc.line(15, y, 195, y);
                         doc.setFontSize(9);
@@ -823,13 +839,13 @@
                     const queueNo = cells[0].innerText;
                     tableData.push([
                         queueNo, cells[1].innerText, cells[2].innerText, cells[3].innerText,
-                        cells[4].innerText, cells[5].innerText, cells[6].innerText, cells[7].innerText
+                        cells[4].innerText, cells[5].innerText, cells[6].innerText, cells[7].innerText, cells[8].innerText
                     ]);
                 });
 
                 doc.autoTable({
                     startY: 40,
-                    head: [['No. Antrian', 'Layanan', 'Nama', 'Tanggal', 'Desa', 'Umur', 'JK', 'No. HP']],
+                    head: [['No. Antrian', 'Layanan', 'Nama', 'Tanggal', 'Desa', 'Umur', 'JK', 'No. HP', 'Keterangan']],
                     body: tableData,
                     theme: 'grid',
                     headStyles: { fillColor: [22, 163, 74] },
@@ -951,7 +967,8 @@
                         message += `   - Desa: ${cells[4].innerText}%0A`;
                         message += `   - Umur: ${cells[5].innerText} tahun%0A`;
                         message += `   - JK: ${cells[6].innerText}%0A`;
-                        message += `   - No. HP: ${cells[7].innerText}%0A%0A`;
+                        message += `   - No. HP: ${cells[7].innerText}%0A`;
+                        message += `   - Ket: ${cells[8].innerText}%0A%0A`;
                     });
 
                     message += "Mohon segera diproses. Terima kasih.";
